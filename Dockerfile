@@ -1,7 +1,7 @@
 # Use official PHP 8.1 image with Apache
 FROM php:8.1-apache
 
-# Install dependencies needed to compile PHP extensions
+# Install dependencies needed for SQLite
 RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     && docker-php-ext-install pdo pdo_sqlite \
@@ -11,9 +11,12 @@ RUN apt-get update && apt-get install -y \
 # Copy project files to Apache web root
 COPY . /var/www/html/
 
+# Make sure Apache can write to SQLite database
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
 # Set working directory
 WORKDIR /var/www/html/
 
 # Expose port 80
 EXPOSE 80
-
