@@ -1,10 +1,12 @@
 <?php
-// fill_form.php — Employees fill the shared form
+$dataDir = __DIR__ . '/data';
+if (!file_exists($dataDir)) mkdir($dataDir, 0777, true);
 
-$db = new PDO('sqlite:' . __DIR__ . '/forms.db');
+$dbPath = $dataDir . '/forms.db';
+$db = new PDO('sqlite:' . $dbPath);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Create submissions table if not exists
+// Create submissions table
 $db->exec("CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     form_id INTEGER,

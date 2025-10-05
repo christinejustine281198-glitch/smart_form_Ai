@@ -1,7 +1,16 @@
 <?php
+// Writable directory for SQLite DB
+$dataDir = __DIR__ . '/data';
+if (!file_exists($dataDir)) {
+    mkdir($dataDir, 0777, true);
+}
+
 // Database setup
-$db = new PDO('sqlite:forms.db');
+$dbPath = $dataDir . '/forms.db';
+$db = new PDO('sqlite:' . $dbPath);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Create forms table if not exists
 $db->exec("CREATE TABLE IF NOT EXISTS forms (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
