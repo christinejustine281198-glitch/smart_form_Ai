@@ -9,7 +9,9 @@ $db->exec("CREATE TABLE IF NOT EXISTS forms (
     created_at TEXT
 )");
 
-$apiKey = "AIzaSyDL13EAPosZwLsysabzwssoag5i6Q3O2RM";
+
+$apiKey = getenv('GEMINI_API_KEY');
+
 $success_message = "";
 $form_structure = [];
 
