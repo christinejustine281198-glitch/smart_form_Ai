@@ -254,30 +254,38 @@ button:hover {
                 <input type="text" name="title" placeholder="Enter Form Title" required />
                 <br /><br />
 
-                <?php foreach ($form_structure as $field):
-                    $label = is_array($field['label']) ? implode(' ', $field['label']) : $field['label'];
-                    $name  = is_array($field['name']) ? implode('_', $field['name']) : $field['name'];
-                ?>
-                <div class="form-field">
-                    <label><?= htmlspecialchars($label) ?></label><br />
-                    <?php if (in_array($type, ['text', 'email', 'number', 'date'])): ?>
-    <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" />
-<?php elseif ($type === 'textarea'): ?>
-    <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
-<?php elseif ($type === 'select' && isset($field['options'])): ?>
-    <select name="<?= htmlspecialchars($name) ?>">
+               <?php foreach ($form_structure as $field):
+    $label = is_array($field['label']) ? implode(' ', $field['label']) : $field['label'];
+    $name  = is_array($field['name']) ? implode('_', $field['name']) : $field['name'];
+    $type  = isset($field['type']) ? strtolower($field['type']) : 'text'; // ✅ define $type safely
+?>
+<div class="form-field">
+    <label><?= htmlspecialchars($label) ?></label><br />
+    
+    <?php if (in_array($type, ['text', 'email', 'number', 'date'])): ?>
+        <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" />
+    
+    <?php elseif ($type === 'textarea'): ?>
+        <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
+    
+    <?php elseif ($type === 'select' && isset($field['options'])): ?>
+        <select name="<?= htmlspecialchars($name) ?>">
+            <?php foreach ($field['options'] as $opt): ?>
+                <option><?= htmlspecialchars($opt) ?></option>
+            <?php endforeach; ?>
+        </select>
+    
+    <?php elseif ($type === 'radio' && isset($field['options'])): ?>
         <?php foreach ($field['options'] as $opt): ?>
-            <option><?= htmlspecialchars($opt) ?></option>
+            <label>
+                <input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>" />
+                <?= htmlspecialchars($opt) ?>
+            </label>
         <?php endforeach; ?>
-    </select>
-<?php elseif ($type === 'radio' && isset($field['options'])): ?>
-    <?php foreach ($field['options'] as $opt): ?>
-        <label><input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>" /> <?= htmlspecialchars($opt) ?></label>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php endif; ?>
+</div>
+<?php endforeach; ?>
 
-                </div>
-                <?php endforeach; ?>
 
                 <button type="submit" name="save_form" class="submit-btn">Save & Share</button>
             </form>
