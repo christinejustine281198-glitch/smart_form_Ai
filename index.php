@@ -260,21 +260,22 @@ button:hover {
                 ?>
                 <div class="form-field">
                     <label><?= htmlspecialchars($label) ?></label><br />
-                    <?php if (in_array($field['type'], ['text','email','number','date'])): ?>
-                        <input type="<?= htmlspecialchars($field['type']) ?>" name="<?= htmlspecialchars($name) ?>" />
-                    <?php elseif ($field['type'] == 'textarea'): ?>
-                        <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
-                    <?php elseif ($field['type'] == 'select' && isset($field['options'])): ?>
-                        <select name="<?= htmlspecialchars($name) ?>">
-                            <?php foreach ($field['options'] as $opt): ?>
-                                <option><?= htmlspecialchars($opt) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    <?php elseif ($field['type'] == 'radio' && isset($field['options'])): ?>
-                        <?php foreach ($field['options'] as $opt): ?>
-                            <label><input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>" /> <?= htmlspecialchars($opt) ?></label>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php if (in_array($type, ['text', 'email', 'number', 'date'])): ?>
+    <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" />
+<?php elseif ($type === 'textarea'): ?>
+    <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
+<?php elseif ($type === 'select' && isset($field['options'])): ?>
+    <select name="<?= htmlspecialchars($name) ?>">
+        <?php foreach ($field['options'] as $opt): ?>
+            <option><?= htmlspecialchars($opt) ?></option>
+        <?php endforeach; ?>
+    </select>
+<?php elseif ($type === 'radio' && isset($field['options'])): ?>
+    <?php foreach ($field['options'] as $opt): ?>
+        <label><input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>" /> <?= htmlspecialchars($opt) ?></label>
+    <?php endforeach; ?>
+<?php endif; ?>
+
                 </div>
                 <?php endforeach; ?>
 
