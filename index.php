@@ -38,7 +38,8 @@ if (isset($_POST['save_form']) && !empty($_POST['structure'])) {
         $form_id = $db->lastInsertId();
 
         // Shareable link
-        $success_message = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/fill_form.php?form_id=" . $form_id;
+     $success_message = "http://" . $_SERVER['HTTP_HOST'] . "/fill_form.php?form_id=" . $form_id;
+
 
         // Keep form preview visible
         $form_structure = json_decode($structure, true);
