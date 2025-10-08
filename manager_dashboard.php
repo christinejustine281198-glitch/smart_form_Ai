@@ -172,7 +172,7 @@ function prefillExample() {
 }
 
 function shareForm(formId) {
-    const shareUrl = `${window.location.origin}/smart_form/fill_form.php?form_id=${formId}`;
+    const shareUrl = `${window.location.origin}/fill_form.php?form_id=${formId}`;
 
     navigator.clipboard.writeText(shareUrl).then(() => {
         alert('Share link copied to clipboard:\n' + shareUrl);
