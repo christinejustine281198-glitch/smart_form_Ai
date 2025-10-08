@@ -3,6 +3,9 @@ header('Content-Type: application/json');
 
 // Your Google API key (must have Vertex AI enabled)
 $apiKey = getenv('API_KEY');
+if (!$apiKey) {
+    die('API key is missing. Please set it in your environment variables.');
+}
 if ($apiKey === "your_gemini_api_key_here") {
     echo json_encode(['error' => 'Set your Gemini API key in query_gemini.php']); 
     exit;

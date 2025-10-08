@@ -19,6 +19,9 @@ $db->exec("CREATE TABLE IF NOT EXISTS forms (
 )");
 
 $apiKey = getenv('API_KEY'); // Replace with your actual API key
+if (!$apiKey) {
+    die('API key is missing. Please set it in your environment variables.');
+}
 
 $success_message = "";
 $form_structure = [];
@@ -257,7 +260,7 @@ button:hover {
                 ?>
                 <div class="form-field">
                     <label><?= htmlspecialchars($label) ?></label><br />
-                    <?php if (in_array($field['type'], ['text','email','number'])): ?>
+                    <?php if (in_array($field['type'], ['text','email','number','date'])): ?>
                         <input type="<?= htmlspecialchars($field['type']) ?>" name="<?= htmlspecialchars($name) ?>" />
                     <?php elseif ($field['type'] == 'textarea'): ?>
                         <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
