@@ -112,24 +112,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="post">
         <?php foreach ($form_structure as $field): 
             $label = is_array($field['label']) ? implode(' ', $field['label']) : $field['label'];
-            $name = is_array($field['name']) ? implode('_', $field['name']) : $field['name'];
+            $name  = is_array($field['name']) ? implode('_', $field['name']) : $field['name'];
+            $type  = strtolower(trim($field['type']));  // Normalize and protect
         ?>
             <div class="form-field">
                 <label><?= htmlspecialchars($label) ?></label><br>
-                <?php if ($field['type'] == 'text' || $field['type'] == 'email' || $field['type'] == 'number'): ?>
-                    <input type="<?= $field['type'] ?>" name="<?= htmlspecialchars($name) ?>" required>
-                <?php elseif ($field['type'] == 'textarea'): ?>
+
+                <?php if (in_array($type, ['text', 'email', 'number', 'date'])): ?>
+                    <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" required>
+
+                <?php elseif ($type === 'phone'): ?>
+                    <input type="tel" name="<?= htmlspecialchars($name) ?>" required>
+
+                <?php elseif ($type === 'textarea'): ?>
                     <textarea name="<?= htmlspecialchars($name) ?>" required></textarea>
-                <?php elseif ($field['type'] == 'select' && isset($field['options'])): ?>
+
+                <?php elseif ($type === 'select' && isset($field['options'])): ?>
                     <select name="<?= htmlspecialchars($name) ?>" required>
                         <?php foreach ($field['options'] as $opt): ?>
                             <option><?= htmlspecialchars($opt) ?></option>
                         <?php endforeach; ?>
                     </select>
-                <?php elseif ($field['type'] == 'radio' && isset($field['options'])): ?>
+
+                <?php elseif ($type === 'radio' && isset($field['options'])): ?>
                     <?php foreach ($field['options'] as $opt): ?>
-                        <label><input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?></label>
+                        <label>
+                            <input type="radio" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
+                        </label><br>
                     <?php endforeach; ?>
+
+                <?php else: ?>
+                    <!-- Unknown type fallback -->
+                    <input type="text" name="<?= htmlspecialchars($name) ?>" required>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
@@ -137,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Submit</button>
     </form>
 </div>
+
 
 </body>
 </html>
