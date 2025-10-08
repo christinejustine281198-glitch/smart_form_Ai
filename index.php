@@ -257,13 +257,26 @@ button:hover {
                <?php foreach ($form_structure as $field):
     $label = is_array($field['label']) ? implode(' ', $field['label']) : $field['label'];
     $name  = is_array($field['name']) ? implode('_', $field['name']) : $field['name'];
-    $type  = isset($field['type']) ? strtolower($field['type']) : 'text'; // ✅ define $type safely
+    // Normalize type for unexpected AI outputs
+$rawType = isset($field['type']) ? strtolower($field['type']) : 'text';
+$type = match($rawType) {
+    'phone', 'phone number', 'tel' => 'tel',
+    'email' => 'email',
+    'number', 'numeric' => 'number',
+    'date' => 'date',
+    'textarea' => 'textarea',
+    'radio' => 'radio',
+    'select' => 'select',
+    default => 'text'
+};
+
 ?>
 <div class="form-field">
     <label><?= htmlspecialchars($label) ?></label><br />
     
-    <?php if (in_array($type, ['text', 'email', 'number', 'date'])): ?>
-        <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" />
+  <?php if (in_array($type, ['text', 'email', 'number', 'date', 'tel'])): ?>
+    <input type="<?= htmlspecialchars($type) ?>" name="<?= htmlspecialchars($name) ?>" />
+
     
     <?php elseif ($type === 'textarea'): ?>
         <textarea name="<?= htmlspecialchars($name) ?>"></textarea>
