@@ -3,7 +3,7 @@ $dataDir = __DIR__ . '/data';
 if (!file_exists($dataDir)) mkdir($dataDir, 0777, true);
 
 $dbPath = $dataDir . '/forms.db';
-$db = new PDO('sqlite:' . $dbPath);
+require_once 'db.php';
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Create submissions table

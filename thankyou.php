@@ -43,7 +43,7 @@
     <div class="card">
         <h1>✅ Form Submitted Successfully!</h1>
         <p>Thank you for your response.</p>
-        <a href="index.php">⬅ Back to Dashboard</a>
+        <a href="index.php">⬅ back to home</a>
     </div>
 </body>
 </html>

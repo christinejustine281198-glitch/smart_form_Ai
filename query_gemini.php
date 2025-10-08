@@ -1,26 +1,29 @@
 <?php
-// query_gemini.php
-
 header('Content-Type: application/json');
 
-// Config - put your Gemini API key here
-$apiKey = getenv('GEMINI_API_KEY');
+// Your Google API key (must have Vertex AI enabled)
+$apiKey = "AIzaSyDL13EAPosZwLsysabzwssoag5i6Q3O2RM";
 if ($apiKey === "your_gemini_api_key_here") {
-    echo json_encode(['error' => 'Set your Gemini API key in query_gemini.php']); exit;
+    echo json_encode(['error' => 'Set your Gemini API key in query_gemini.php']); 
+    exit;
 }
 
-// Get POST JSON
+// Get POST JSON data
 $body = json_decode(file_get_contents('php://input'), true);
 $query = trim($body['query'] ?? '');
 $form_id = !empty($body['form_id']) ? intval($body['form_id']) : null;
 
-if (!$query) { echo json_encode(['error' => 'Empty query']); exit; }
+if (!$query) {
+    echo json_encode(['error' => 'Empty query']);
+    exit;
+}
 
 try {
-    $db = new PDO('sqlite:' . __DIR__ . '/forms.db');
+    // Open SQLite DB containing forms and submissions
+    require_once 'db.php';
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Fetch recent submissions (limit to last 30 to keep prompt size reasonable)
+    // Fetch recent submissions for context (max 30 recent submissions)
     if ($form_id) {
         $stmt = $db->prepare("SELECT responses, submitted_at FROM submissions WHERE form_id = ? ORDER BY submitted_at DESC LIMIT 30");
         $stmt->execute([$form_id]);
@@ -30,50 +33,57 @@ try {
     }
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Build compact context: an array of parsed submissions (decoded JSON)
+    // Parse responses JSON and build context array
     $examples = [];
     foreach ($rows as $r) {
         $decoded = json_decode($r['responses'], true);
         if (is_array($decoded)) $examples[] = $decoded;
     }
 
-    // Prepare prompt: include a short sample (up to first 20 entries)
+    // Limit to first 20 for prompt size
     $context = json_encode(array_slice($examples, 0, 20), JSON_UNESCAPED_UNICODE);
     if (!$context) $context = '[]';
 
+    // System prompt explaining context and task
     $systemPrompt = "You are a helpful data analyst. Given the following recent submissions (JSON array):\n$context\n\nAnswer the question precisely. If the data cannot answer fully, say what is missing.";
 
+    // Combine with user question
     $fullPrompt = $systemPrompt . "\n\nQuestion: " . $query;
 
-    // Call Gemini generateContent endpoint
+    // Prepare request payload for Gemini (Vertex AI Generative Language)
     $payload = [
         "contents" => [
             ["parts" => [["text" => $fullPrompt]]]
         ]
     ];
 
-    $ch = curl_init("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" . $apiKey);
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" . $apiKey;
+
+    // Initialize cURL
+    $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+
     $resp = curl_exec($ch);
     $err = curl_error($ch);
     curl_close($ch);
 
     if ($err) {
-        echo json_encode(['error' => 'Curl error: ' . $err]); exit;
+        echo json_encode(['error' => 'Curl error: ' . $err]);
+        exit;
     }
 
     $respData = json_decode($resp, true);
     $answer = '';
 
-    // Robust extraction of model text
+    // Extract answer robustly (check common response structures)
     if (isset($respData['candidates'][0]['content']['parts'][0]['text'])) {
         $answer = $respData['candidates'][0]['content']['parts'][0]['text'];
     } elseif (isset($respData['output'][0]['content'][0]['text'])) {
         $answer = $respData['output'][0]['content'][0]['text'];
     } else {
-        // fallback: full response
+        // fallback: output raw response for debugging
         $answer = json_encode($respData);
     }
 

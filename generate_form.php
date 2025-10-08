@@ -1,115 +1,111 @@
 <?php
-require 'db.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'];
-    $nl_query = $_POST['nl_query'];
+// Connect to DB
+$db = new PDO('sqlite:' . __DIR__ . '/forms.db');
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Call Gemini API (replace YOUR_GEMINI_API_KEY)
-    $api_key = "YOUR_GEMINI_API_KEY";
-    $model = "gemini-2.0-flash";
+// Create forms table if not exists
+$db->exec("CREATE TABLE IF NOT EXISTS forms (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    structure TEXT NOT NULL,
+    created_at TEXT NOT NULL
+)");
 
-    $data = [
-        "model" => $model,
-        "prompt" => "Generate a JSON form with fields based on: $nl_query"
-    ];
+// Define form structure to preview
+$form_structure = [
+    ['type' => 'text', 'label' => 'Name', 'name' => 'name'],
+    ['type' => 'email', 'label' => 'Email', 'name' => 'email'],
+    ['type' => 'select', 'label' => 'Country', 'name' => 'country', 'options' => ['USA', 'Canada', 'Other']]
+];
 
-    $ch = curl_init("https://api.openai.com/v1/responses");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer $api_key",
-        "Content-Type: application/json"
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_form'])) {
+    $title = trim($_POST['title'] ?? '');
+    $structure = $_POST['structure'] ?? '';
 
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $result = json_decode($response, true);
-    $form_json = $result['output'][0]['content'][0]['text'] ?? '{"fields":[]}';
-
-    // Save form to SQLite
-    $stmt = $db->prepare("INSERT INTO forms (title, form_json) VALUES (?, ?)");
-    $stmt->execute([$title, $form_json]);
-    $form_id = $db->lastInsertId();
-
-    $share_link = "http://localhost/smartcard_form/fill_form.php?id=$form_id";
-    $message = "✅ Form saved! Share link: <a href='$share_link'>$share_link</a>";
+    if ($title !== '' && $structure !== '') {
+        try {
+            $stmt = $db->prepare("INSERT INTO forms (title, structure, created_at) VALUES (?, ?, datetime('now'))");
+            $success = $stmt->execute([$title, $structure]);
+            if ($success) {
+                // Show alert and redirect
+                echo "<script>
+                    alert('Form saved successfully!');
+                    window.location.href = 'manager_dashboard.php';
+                </script>";
+                exit;
+            } else {
+                echo "<p style='color:red;'>Failed to save form.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>DB error: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    } else {
+        echo "<p style='color:red;'>Title or structure missing.</p>";
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SmartCardAI Form Generator</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: 'Poppins', sans-serif;
-    }
-    .container {
-      max-width: 700px;
-      margin-top: 50px;
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 15px;
-      width: 80px;
-    }
-    h1 {
-      text-align: center;
-      font-weight: 700;
-      color: #1e3a8a;
-    }
-    h5 {
-      text-align: center;
-      color: #6c757d;
-      margin-bottom: 30px;
-    }
-    .btn-primary {
-      width: 100%;
-      background-color: #1e3a8a;
-      border: none;
-    }
-    .btn-primary:hover {
-      background-color: #0d2561;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Form Generator</title>
+<style>
+    body { font-family: 'Segoe UI', sans-serif; background:#012e00; color:#fff; padding:20px; }
+    input, select, textarea, button { font-size: 14px; padding: 8px; margin: 6px 0; border-radius: 5px; border: none; }
+    input[type="text"], select, textarea { width: 100%; }
+    button { background:#06a027; color:#fff; cursor:pointer; border:none; }
+    button:hover { background:#04a01f; }
+    label { font-weight: 600; }
+    .form-preview { background:#ecfbffcf; padding: 20px; border-radius: 12px; color:#000; max-width: 600px; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Logo -->
-    <img src="logo.png" alt="SmartCardAI Logo" class="logo">
 
-    <!-- Headings -->
-    <h1>SmartCardAI Form Generator</h1>
-    <h5>Generate dynamic forms using Gemini AI</h5>
+<h1>Create & Save Your Form</h1>
 
-    <!-- Form -->
-    <form method="post">
-      <div class="mb-3">
-        <label class="form-label">Form Title</label>
-        <input type="text" name="title" class="form-control" placeholder="Enter form title" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Describe your form</label>
-        <textarea name="nl_query" class="form-control" rows="5" placeholder="e.g. A feedback form with name, email, rating, and comments" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Generate Form</button>
+<div class="form-preview">
+    <h3>Form Preview</h3>
+
+    <form method="post" action="">
+        <label for="title">Form Title:</label><br />
+        <input type="text" id="title" name="title" placeholder="Enter form title" required /><br /><br />
+
+        <?php foreach ($form_structure as $field): 
+            $label = $field['label'];
+            $name = $field['name'];
+        ?>
+            <label><?= htmlspecialchars($label) ?></label><br />
+            <?php if (in_array($field['type'], ['text', 'email', 'number'])): ?>
+                <input type="<?= htmlspecialchars($field['type']) ?>" name="<?= htmlspecialchars($name) ?>" disabled />
+            <?php elseif ($field['type'] == 'textarea'): ?>
+                <textarea name="<?= htmlspecialchars($name) ?>" disabled></textarea>
+            <?php elseif ($field['type'] == 'select' && isset($field['options'])): ?>
+                <select name="<?= htmlspecialchars($name) ?>" disabled>
+                    <?php foreach ($field['options'] as $opt): ?>
+                        <option><?= htmlspecialchars($opt) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+            <br /><br />
+        <?php endforeach; ?>
+
+        <?php
+        $structure_json = json_encode($form_structure);
+        if ($structure_json === false) {
+            die('Error encoding form structure to JSON');
+        }
+        ?>
+        <input type="hidden" name="structure" value='<?= htmlspecialchars($structure_json, ENT_QUOTES) ?>' />
+
+        <button type="submit" name="save_form">Save & Share</button>
     </form>
+</div>
 
-    <?php if (!empty($message)): ?>
-      <div class="alert alert-success mt-4">
-        <?= $message ?>
-      </div>
-    <?php endif; ?>
-  </div>
 </body>
 </html>
