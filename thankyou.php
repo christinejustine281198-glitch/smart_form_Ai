@@ -6,7 +6,7 @@
 <style>
     body {
         font-family: 'Segoe UI', sans-serif;
-        background:#012e00;
+        background:#ffffff;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -15,14 +15,14 @@
         margin: 0;
     }
     .card {
-        background: #ecfbffcf;
-        padding: 40px;
+        background: #f2f2f2;;
+        padding: 70px;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 18px 20px rgba(0,0,0,0.1);
         text-align: center;
     }
     h1 {
-        color: #26870b;
+        color: #000000ff;
         margin-bottom: 10px;
     }
     a {
@@ -35,13 +35,13 @@
         text-decoration: none;
     }
     a:hover {
-        background: #0b8117ff;
+        background: #4b4b4bff;
     }
 </style>
 </head>
 <body>
     <div class="card">
-        <h1>✅ Form Submitted Successfully!</h1>
+        <h1> Form Submitted Successfully!</h1>
         <p>Thank you for your response.</p>
         <a href="index.php">⬅ back to home</a>
     </div>

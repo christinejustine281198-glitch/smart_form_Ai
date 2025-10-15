@@ -155,7 +155,7 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
         body {
             font-family: 'Segoe UI', sans-serif;
             background: #ffffff;
-            margin: 0;
+            margin: -15px;
             padding: 0;
             color: #000;
         }
@@ -166,6 +166,7 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            font-family: Arial, sans-serif;
         }
         header img {
             height: 50px;
@@ -173,15 +174,15 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
         .container {
             width: 80%;
             margin: 30px auto;
-            background: #ecfbffcf;
+            background: #ffff;
             border-radius: 12px;
-            box-shadow: 0 15px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
             padding: 30px;
         }
         input[type="text"], input[type="email"], input[type="number"], textarea, select {
             width: 100%;
             padding: 10px;
-            border: 1px solid #144e05;
+            border: 1px solid #000000ff;
             border-radius: 6px;
             margin-top: 10px;
             font-size: 14px;
@@ -199,23 +200,23 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
             font-size: 15px;
         }
         button:hover {
-            background: #0f521d;
+            background: #2a2a2aff;
         }
         .submit-btn {
-            background: #197c28;
-            font-weight: 600;
-            margin-top: 15px;
+            background: #000000ff;
+            font-weight: 500;
+            margin-top: 20px;
         }
         .form-preview {
             background: #ffffffd4;
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
-            border: 1px solid #d6e9d6;
+            border: 1px solid #fdfdfdff;
         }
         #linkContainer {
             margin-top: 15px;
-            background: #dff0d8;
+            background: #ffffffff;
             padding: 15px;
             border-radius: 6px;
             display: flex;
@@ -234,19 +235,19 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <header>
     <img src="logo.png.jpeg" alt="SmartCardAI Logo" />
-    <h1><b>SmartCard AI Form Generator</b></h1>
+    <h1><b>SmartCard AI </b></h1>
 </header>
 
 
 <div class="container">
   <div class="nav-buttons">
   
-        <a href="manager_dashboard.php"><button type="button">Submissions</button></a>
     </div>
     <h2>Generate Form using AI</h2>
     <form method="post">
         <input type="text" name="prompt" placeholder="e.g., Feedback form with name, age, and feedback" required />
         <button type="submit" name="generate" class="submit-btn">Generate Form</button>
+        <a href="manager_dashboard.php"><button type="button">Submissions</button></a>
     </form>
 
     <?php if (!empty($form_structure)) : ?>

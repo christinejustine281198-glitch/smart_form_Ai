@@ -39,14 +39,14 @@ $submissions = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #012e00;
-    color: #c7e7c5;
+    background: #ffff;
+    color: #000000;
     padding: 30px;
   }
   a.back-link {
     display: inline-block;
     margin-bottom: 20px;
-    color: #a0d468;
+    color: #000000;
     text-decoration: none;
     font-weight: bold;
   }
@@ -59,7 +59,7 @@ $submissions = $subStmt->fetchAll(PDO::FETCH_ASSOC);
   table {
     width: 100%;
     border-collapse: collapse;
-    background: #ecfbffcf;
+    background: #f1f1f1cf;
     color: #012e00;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   }
@@ -70,7 +70,7 @@ $submissions = $subStmt->fetchAll(PDO::FETCH_ASSOC);
     text-align: left;
   }
   th {
-    background: #197c28e6;
+    background: #000000f1;
     color: white;
   }
   pre {

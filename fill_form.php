@@ -49,12 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <style>
     body {
         font-family: 'Segoe UI', sans-serif;
-        background: #012e00;
+        background: #ffffffff;
         margin: 0;
         padding: 0;
     }
     header {
-        background:#197c28e6;
+        background:#000000;
         color: white;
         padding: 15px 40px;
         display: flex;
@@ -71,21 +71,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .container {
         width: 80%;
         margin: 30px auto;
-        background:#ecfbffcf;
+        background:#f1f1f1cf;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: -1 2px 8px rgba(0, 0, 0, 0.62);
         padding: 30px;
     }
     input[type="text"], input[type="email"], input[type="number"], textarea, select {
         width: 100%;
         padding: 10px;
-        border: 1px solid #ccc;
+        border: 1px solid #f2f2f2;
         border-radius: 6px;
         margin-top: 10px;
         font-size: 14px;
     }
     button {
-        background:#0c1b0b;
+        background:#000000;
         color: white;
         border: none;
         padding: 10px 20px;
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         margin-top: 15px;
     }
     button:hover {
-        background: #06a027ff;
+        background: #000000ff;
     }
     .form-field {
         margin-bottom: 15px;

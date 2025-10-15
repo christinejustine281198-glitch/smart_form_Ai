@@ -43,22 +43,25 @@ try {
 <meta charset="utf-8" />
 <title>Manager Dashboard - SmartCardAI</title>
 <style>
-body { font-family: 'Segoe UI', sans-serif; background:#012e00; padding:30px; }
-h1 { color:#c7e7c5; }
-table { width:100%; border-collapse:collapse; margin-top:18px; background:#ecfbffcf; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+body { font-family: 'Segoe UI', sans-serif; background:#ffffff; padding:60px; }
+h1 { color:#fffff; }
+table { width:100%; border-collapse:collapse; margin-top:8px; background:#ffffff; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
 th,td { padding:12px; border-bottom:1px solid #eee; text-align:left; }
-th { background:#197c28e6; color:#fff; }
-button { background:#0c1b0b; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; }
-.query-box { margin-top:28px; background:#ecfbffcf; padding:18px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+th { background:#000000; color:#fff; }
+button { background:#000000; color:#fff; border:white; padding:8px 12px; border-radius:6px; cursor:pointer; }
+.query-box { margin-top:28px; background:#f2f2f2; padding:18px; border-radius:8px; box-shadow:0 15px 30px rgba(0,0,0,0.06); }
 textarea { width:90%; height:35px; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:14px; }
 .select-inline { display:inline-block; margin-right:10px; }
-.response-box { margin-top:14px; padding:12px; background:#f9fafc; border-left:4px solid #1a237e; white-space:pre-wrap; }
+.response-box { margin-top:14px; padding:12px; background:#f9fafc; border-left:4px solid #000000ff; white-space:pre-wrap; }
 .nav-button { margin-bottom: 20px; }
-.nav-button a button { font-weight: 600; font-size: 16px; }
+.nav-button a button { font-weight: 550; font-size:15px; }
+.save{margin-left:-69px;
+margin-right:-84px;
+margin-top:-69px;}
 
 /* Delete button style */
 button.delete-btn {
-    background: #d9534f;
+    background: #242424ff;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -68,22 +71,42 @@ button.delete-btn {
 }
 
 button.delete-btn:hover {
-    background: #c9302c;
+    background: #404040ff;
 }
+header {
+            background: #000000;
+            color: #ffffff;
+            padding: 15px 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            width:100%
+            margin-left:0px;
+            margin-right:0px;
+        }
+
 </style>
 </head>
 <body>
 
-<header>
+<div class="save">
+    <header>
+    
+
     <h1>Manager Dashboard</h1>
-    <p style="color:#ffffff;">List of saved forms — click <strong>View Submissions</strong> to inspect them.</p>
-</header>
+    
+    
+        <a href="index.php"><button type="button">Return to Form Generator</button></a>
+   
+    
+     
+    
+</header></div>
 
 <div class="container">
 
-    <div class="nav-button">
-        <a href="index.php"><button type="button">Return to Form Generator</button></a>
-    </div>
+    
 
     <table>
         <thead>
