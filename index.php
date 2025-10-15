@@ -154,14 +154,14 @@ $saved_forms = $saved_forms_stmt->fetchAll(PDO::FETCH_ASSOC);
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #012e00;
+            background: #ffffff;
             margin: 0;
             padding: 0;
             color: #000;
         }
         header {
-            background: #197c28e6;
-            color: #c0ffc0;
+            background: #000000;
+            color: #ffffff;
             padding: 15px 45px;
             display: flex;
             align-items: center;
